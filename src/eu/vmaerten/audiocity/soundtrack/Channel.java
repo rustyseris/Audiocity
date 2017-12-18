@@ -13,7 +13,7 @@ import eu.vmaerten.audiocity.soundtrack.Exceptions.BadInputValue;
  */
 public class Channel implements Iterable<Sample>, Cloneable {
     private List<Sample> samples;
-    long sampleRate;
+    private long sampleRate;
 
     /**
      * Constructor of Channel.
@@ -37,7 +37,7 @@ public class Channel implements Iterable<Sample>, Cloneable {
         this.sampleRate = channel.getSampleRate();
         this.samples = new ArrayList<>(channel.getSize());
         for(Sample sample : channel) {
-            this.samples.add(sample);
+            this.samples.add(new Sample(sample));
         }
     }
 
@@ -90,10 +90,6 @@ public class Channel implements Iterable<Sample>, Cloneable {
             }
             this.samples.get(cursor).set(average / (double) window_size);
         }
-    }
-
-    public void cut(int start, int end) {
-        this.samples = new ArrayList<>(this.samples.subList(start, end));
     }
 
     @Override

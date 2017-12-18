@@ -26,9 +26,17 @@ public class Sample implements Cloneable {
         this.sample = sample.get();
     }
 
+    /**
+     * Return the current value contained in the sample
+     * @return the sample value
+     */
     public double get() { return this.sample; }
 
+    /**
+     * Set the inner value of the sample. The method will make sure the value stays between -1 and 1
+     * @param sample new value of the sample
+     */
     public void set(double sample) {
-        this.sample = Double.min(Double.max(sample, 1.0), -1.0);
+        this.sample = Double.max(Double.min(sample, 1.0), -1.0);
     }
 }

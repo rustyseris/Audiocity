@@ -39,6 +39,23 @@ public class WavSoundtrack extends Soundtrack {
         }
     }
 
+    /**
+     * Return a deep copy of the current soundtrack
+     * @param soundtrack the soundtrack to copy
+     */
+    public WavSoundtrack(WavSoundtrack soundtrack) {
+        List<Channel> channels = soundtrack.getChannels();
+        this.channels = new ArrayList<>(channels.size());
+        for (Channel channel : channels) {
+            this.channels.add(new Channel(channel));
+        }
+
+        this.sampleRate = soundtrack.sampleRate;
+        this.durationMillis = soundtrack.durationMillis;
+        this.name = soundtrack.name; // strings are immutable, so we don't have to create a complete copy
+        this.samplesPerChannel = soundtrack.samplesPerChannel;
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -62,5 +79,10 @@ public class WavSoundtrack extends Soundtrack {
     @Override
     public List<Channel> getChannels() {
         return this.channels;
+    }
+
+    @Override
+    public Soundtrack copy() {
+        return new WavSoundtrack(this);
     }
 }

@@ -1,18 +1,19 @@
 package eu.vmaerten.audiocity.ui;
 
-import eu.vmaerten.audiocity.soundtrack.Channel;
+import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import eu.vmaerten.audiocity.soundtrack.formats.WavSoundtrack;
 import eu.vmaerten.audiocity.ui.Components.SoundtrackPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.control.ScrollPane;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,37 +21,20 @@ public class MainWindow extends Application {
     private static final long WINDOW_WIDTH = 1280;
     private static final long WINDOW_HEIGHT = 720;
 
+    private List<SoundtrackPane> soundtracks;
+    private VBox soundtracksContainer;
+    private BorderPane root;
+    private Stage mainStage;
+
     @Override
     public void start(Stage stage) throws Exception {
-        WavSoundtrack soundtrack = new WavSoundtrack("/home/xayah/Music/audio.wav");
-        List<Channel> channels = soundtrack.getChannels();
+        this.mainStage = stage;
+        this.root = new BorderPane();
+        this.root.setPadding(new Insets(0, 0, 0, 0));
+        Scene scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        BorderPane root = new BorderPane();
-        root.setPadding(new Insets(0, 0, 0, 0));
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        HBox menu = new HBox();
-        menu.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        menu.setPrefSize(200, 50);
-        root.setTop(menu);
-
-        ScrollPane soundtracks_container_scrollable = new ScrollPane();
-        soundtracks_container_scrollable.setFitToHeight(true);
-        soundtracks_container_scrollable.setFitToWidth(true);
-
-        VBox soundtracks_container = new VBox();
-        soundtracks_container.setSpacing(10);
-
-        List<Node> soundtracks = new ArrayList<>();
-        soundtracks.add(new SoundtrackPane(soundtrack));
-        soundtracks.add(new SoundtrackPane(soundtrack));
-
-        for (Node node : soundtracks) {
-            soundtracks_container.getChildren().add(node);
-        }
-
-        soundtracks_container_scrollable.setContent(soundtracks_container);
-        root.setCenter(soundtracks_container_scrollable);
+        this.setupMenu();
+        this.setupSoundtracksPanel();
 
         stage.setMinWidth(720);
         stage.setMinHeight(360);
@@ -58,21 +42,83 @@ public class MainWindow extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void setupSoundtracksPanel() throws Exception {
+        ScrollPane soundtracks_container_scrollable = new ScrollPane();
+        soundtracks_container_scrollable.setFitToHeight(true);
+        soundtracks_container_scrollable.setFitToWidth(true);
+
+        this.soundtracks = new ArrayList<>();
+        this.soundtracksContainer = new VBox();
+        this.soundtracksContainer.setSpacing(10);
+
+        soundtracks_container_scrollable.setContent(this.soundtracksContainer);
+        this.root.setCenter(soundtracks_container_scrollable);
+    }
+
+    private void setupMenu() {
+        MenuBar menu = new MenuBar();
+        menu.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.root.setTop(menu);
+
+        Menu file = new Menu("File");
+        MenuItem import_soundtrack = new MenuItem("Import soundtrack");
+        import_soundtrack.setOnAction(actionEvent -> this.importSoundtrack());
+        file.getItems().addAll(import_soundtrack);
+
+        Menu edit = new Menu("Edit");
+        menu.getMenus().addAll(file, edit);
+    }
+
+    private void importSoundtrack() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import a soundtrack");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.ogg", "*.mp3"),
+                new FileChooser.ExtensionFilter("All files", "*")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(this.mainStage);
+        if(selectedFile != null) {
+            String extension = this.getExtension(selectedFile);
+            switch (extension) {
+                case ".wav":
+                    this.importWavSoundtrack(selectedFile.getPath());
+                    break;
+                default:
+                    this.showAlert(Alert.AlertType.ERROR, "Unsupported file extension");
+            }
+        }
+    }
+
+    private void importWavSoundtrack(String path) {
+        try {
+            this.addSoundtrack(new WavSoundtrack(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.showAlert(Alert.AlertType.ERROR, "An error occured when importing a WAV soundtrack. (more info in the console)");
+        }
+    }
+
+    private void addSoundtrack(Soundtrack soundtrack) {
+        SoundtrackPane pane = new SoundtrackPane(soundtrack);
+        this.soundtracks.add(pane);
+        this.soundtracksContainer.getChildren().add(pane);
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type, message);
+        alert.showAndWait();
+    }
+
+    private String getExtension(File file) {
+        String fileName = file.getName();
+
+        int extensionIndex = fileName.lastIndexOf('.');
+        if(extensionIndex > -1) {
+            return fileName.substring(extensionIndex);
+        } else {
+            return "";
+        }
+    }
 }
-
-
-//Col   umnConstraints root_column = new ColumnConstraints();
-//        root_column.setPercentWidth(100);
-//        root_column.setFillWidth(true);
-//        root.getColumnConstraints().add(root_column);
-//
-//        RowConstraints menu = new RowConstraints();
-//        menu.setPrefHeight(100);
-//        menu.setMinHeight(100);
-//        menu.setMaxHeight(100);
-//        menu.setFillHeight(true);
-//        root.getRowConstraints().add(menu);
-//
-//        RowConstraints soundtracks_row = new RowConstraints();
-//        soundtracks_row.setFillHeight(true);
-//        root.getRowConstraints().add(soundtracks_row);

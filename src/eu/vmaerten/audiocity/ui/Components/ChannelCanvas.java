@@ -1,7 +1,6 @@
 package eu.vmaerten.audiocity.ui.Components;
 import eu.vmaerten.audiocity.soundtrack.Channel;
 import eu.vmaerten.audiocity.soundtrack.Sample;
-import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -10,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChannelCanvas extends Canvas {
-    Channel channel;
-    final int pixelsPerSecond = 200;
+    private Channel channel;
 
     public ChannelCanvas(Channel channel) {
         super(100, 100);
