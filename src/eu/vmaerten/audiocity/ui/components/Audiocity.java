@@ -1,11 +1,9 @@
-package eu.vmaerten.audiocity.ui;
+package eu.vmaerten.audiocity.ui.components;
 
 import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import eu.vmaerten.audiocity.soundtrack.formats.WavSoundtrack;
-import eu.vmaerten.audiocity.ui.components.SoundtrackPane;
-import javafx.application.Application;
+import eu.vmaerten.audiocity.ui.AudiocityApp;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,56 +14,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainWindow extends Application {
-    private static final long WINDOW_WIDTH = 1280;
-    private static final long WINDOW_HEIGHT = 720;
-
+public class Audiocity extends BorderPane {
     private List<SoundtrackPane> soundtracks;
     private VBox soundtracksContainer;
-    private BorderPane root;
-    private Stage mainStage;
+    private Stage stage;
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        this.mainStage = stage;
-        this.root = new BorderPane();
-        this.root.setPadding(new Insets(0, 0, 0, 0));
-        this.root.setId("root");
+    public Audiocity(Stage stage) {
+        super();
+        this.stage = stage;
+        this.setId("root");
 
-        Scene scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add("/eu/vmaerten/audiocity/ui/css/style.css");
+        this.getStylesheets().add(AudiocityApp.class.getResource("themes/dark.css").toExternalForm());
 
         this.setupMenu();
         this.setupSoundtracksPanel();
 
         this.importWavSoundtrack("/home/xayah/Music/audio.wav");
-
-        stage.setMinWidth(720);
-        stage.setMinHeight(360);
-        stage.setTitle("Audiocity");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void setupSoundtracksPanel() throws Exception {
-        ScrollPane soundtracks_container_scrollable = new ScrollPane();
-        soundtracks_container_scrollable.setFitToHeight(true);
-        soundtracks_container_scrollable.setFitToWidth(true);
-
-        this.soundtracks = new ArrayList<>();
-        this.soundtracksContainer = new VBox();
-        this.soundtracksContainer.setSpacing(10);
-
-        this.soundtracksContainer.setId("soundtrack_container");
-
-        soundtracks_container_scrollable.setContent(this.soundtracksContainer);
-        this.root.setCenter(soundtracks_container_scrollable);
     }
 
     private void setupMenu() {
         MenuBar menu = new MenuBar();
         menu.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
-        this.root.setTop(menu);
+        this.setTop(menu);
 
         Menu file = new Menu("File");
         MenuItem import_soundtrack = new MenuItem("Import soundtrack");
@@ -76,6 +46,21 @@ public class MainWindow extends Application {
         menu.getMenus().addAll(file, edit);
     }
 
+    private void setupSoundtracksPanel() {
+        ScrollPane soundtracks_container_scrollable = new ScrollPane();
+        soundtracks_container_scrollable.setFitToHeight(true);
+        soundtracks_container_scrollable.setFitToWidth(true);
+
+        this.soundtracks = new ArrayList<>();
+        this.soundtracksContainer = new VBox();
+        this.soundtracksContainer.setSpacing(10);
+
+        this.soundtracksContainer.setId("soundtrack-container");
+
+        soundtracks_container_scrollable.setContent(this.soundtracksContainer);
+        this.setCenter(soundtracks_container_scrollable);
+    }
+
     private void importSoundtrack() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import a soundtrack");
@@ -84,15 +69,15 @@ public class MainWindow extends Application {
                 new FileChooser.ExtensionFilter("All files", "*")
         );
 
-        File selectedFile = fileChooser.showOpenDialog(this.mainStage);
+        File selectedFile = fileChooser.showOpenDialog(this.stage);
         if(selectedFile != null) {
-            String extension = this.getExtension(selectedFile);
+            String extension = Audiocity.getExtension(selectedFile);
             switch (extension) {
                 case ".wav":
                     this.importWavSoundtrack(selectedFile.getPath());
                     break;
                 default:
-                    this.showAlert(Alert.AlertType.ERROR, "Unsupported file extension");
+                    Audiocity.showAlert(Alert.AlertType.ERROR, "Unsupported file extension");
             }
         }
     }
@@ -102,7 +87,7 @@ public class MainWindow extends Application {
             this.addSoundtrack(new WavSoundtrack(path));
         } catch (Exception e) {
             e.printStackTrace();
-            this.showAlert(Alert.AlertType.ERROR, "An error occured when importing a WAV soundtrack. (more info in the console)");
+            Audiocity.showAlert(Alert.AlertType.ERROR, "An error occured when importing a WAV soundtrack. (more info in the console)");
         }
     }
 
@@ -112,12 +97,7 @@ public class MainWindow extends Application {
         this.soundtracksContainer.getChildren().add(pane);
     }
 
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type, message);
-        alert.showAndWait();
-    }
-
-    private String getExtension(File file) {
+    private static String getExtension(File file) {
         String fileName = file.getName();
 
         int extensionIndex = fileName.lastIndexOf('.');
@@ -126,5 +106,10 @@ public class MainWindow extends Application {
         } else {
             return "";
         }
+    }
+
+    private static void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type, message);
+        alert.showAndWait();
     }
 }

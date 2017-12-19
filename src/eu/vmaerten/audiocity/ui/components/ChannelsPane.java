@@ -13,7 +13,7 @@ public class ChannelsPane extends AnchorPane {
     private List<ChannelPane> canvass;
     private Soundtrack soundtrack;
 
-    ChannelsPane(Soundtrack soundtrack) {
+    public ChannelsPane(Soundtrack soundtrack) {
         super();
 
         List<Channel> channels = soundtrack.getChannels();

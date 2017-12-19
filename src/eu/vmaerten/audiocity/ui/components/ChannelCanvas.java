@@ -1,6 +1,8 @@
 package eu.vmaerten.audiocity.ui.components;
 import eu.vmaerten.audiocity.soundtrack.Channel;
 import eu.vmaerten.audiocity.soundtrack.Sample;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -10,15 +12,16 @@ import java.util.List;
 class ChannelCanvas extends Canvas {
     static final double CANVAS_HEIGHT = 120;
     private static final double SOUNDWAVE_HEIGHT = CANVAS_HEIGHT;
-
     private static final Color BACKGROUND = new Color(32 / 255.0, 34 / 255.0, 37 / 255.0, 1);
     private static final Color SOUNDWAVE_COLOR = new Color(67 / 255.0, 125 / 255.0, 67 / 255.0, 1);
 
     private Channel channel;
+    private Service soundwaveDrawer;
 
     ChannelCanvas(Channel channel) {
         super(100, CANVAS_HEIGHT);
         this.channel = channel;
+        this.soundwaveDrawer = new SoundwaveDrawer(this);
     }
 
     @Override
@@ -45,7 +48,7 @@ class ChannelCanvas extends Canvas {
     }
 
     private void draw() {
-        this.drawSoundwave();
+        this.soundwaveDrawer.restart();
     }
 
     private void drawSoundwave() {
@@ -66,7 +69,7 @@ class ChannelCanvas extends Canvas {
         gc.fillRect(0, 0, this.getWidth(), CANVAS_HEIGHT);
 
         gc.setStroke(SOUNDWAVE_COLOR);
-        gc.setLineWidth(1);
+        gc.setLineWidth(0.8);
         gc.beginPath();
 
         for (int x = 0; x < partitionCount; x++) {
@@ -90,5 +93,25 @@ class ChannelCanvas extends Canvas {
 
         gc.stroke();
         gc.closePath();
+    }
+
+    private class SoundwaveDrawer extends Service {
+        private ChannelCanvas canvas;
+
+        private SoundwaveDrawer(ChannelCanvas canvas) {
+            this.canvas = canvas;
+        }
+
+        @Override
+        protected Task createTask() {
+            ChannelCanvas canvas = this.canvas;
+            return new Task() {
+                @Override
+                protected Object call() throws Exception {
+                    canvas.drawSoundwave();
+                    return null;
+                }
+            };
+        }
     }
 }
