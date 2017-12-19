@@ -1,8 +1,7 @@
-package eu.vmaerten.audiocity.ui.Components;
+package eu.vmaerten.audiocity.ui.components;
 
 import eu.vmaerten.audiocity.soundtrack.Channel;
 import eu.vmaerten.audiocity.soundtrack.Soundtrack;
-import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -14,31 +13,29 @@ public class ChannelsPane extends AnchorPane {
     private List<ChannelPane> canvass;
     private Soundtrack soundtrack;
 
-    public ChannelsPane(Soundtrack soundtrack) {
+    ChannelsPane(Soundtrack soundtrack) {
         super();
 
         List<Channel> channels = soundtrack.getChannels();
         this.soundtrack = soundtrack;
         this.inner_container = new VBox();
+        this.inner_container.getStyleClass().add("channels-container");
+
         this.canvass = new ArrayList<>(channels.size());
-        this.inner_container.setSpacing(5);
-        
+
         AnchorPane.setLeftAnchor(this.inner_container, 0.0);
         AnchorPane.setRightAnchor(this.inner_container, 0.0);
         AnchorPane.setTopAnchor(this.inner_container, 0.0);
         AnchorPane.setBottomAnchor(this.inner_container, 0.0);
+
         this.getChildren().add(this.inner_container);
+        this.getStyleClass().add("channels-pane");
 
         for (Channel channel : channels) {
             ChannelPane canvas = new ChannelPane(channel);
-            canvas.setBorder(new Border(
-                    new BorderStroke(Color.GREY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))
-            ));
             this.canvass.add(canvas);
             this.inner_container.getChildren().add(canvas);
         }
-
-        this.setPrefHeight(USE_COMPUTED_SIZE);
     }
 
     public Soundtrack getSoundtrack() {

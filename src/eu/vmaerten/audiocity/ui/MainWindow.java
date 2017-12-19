@@ -2,8 +2,7 @@ package eu.vmaerten.audiocity.ui;
 
 import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import eu.vmaerten.audiocity.soundtrack.formats.WavSoundtrack;
-import eu.vmaerten.audiocity.ui.Components.ChannelsPane;
-import eu.vmaerten.audiocity.ui.Components.SoundtrackPane;
+import eu.vmaerten.audiocity.ui.components.SoundtrackPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -31,10 +30,15 @@ public class MainWindow extends Application {
         this.mainStage = stage;
         this.root = new BorderPane();
         this.root.setPadding(new Insets(0, 0, 0, 0));
+        this.root.setId("root");
+
         Scene scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add("/eu/vmaerten/audiocity/ui/css/style.css");
 
         this.setupMenu();
         this.setupSoundtracksPanel();
+
+        this.importWavSoundtrack("/home/xayah/Music/audio.wav");
 
         stage.setMinWidth(720);
         stage.setMinHeight(360);
@@ -51,6 +55,8 @@ public class MainWindow extends Application {
         this.soundtracks = new ArrayList<>();
         this.soundtracksContainer = new VBox();
         this.soundtracksContainer.setSpacing(10);
+
+        this.soundtracksContainer.setId("soundtrack_container");
 
         soundtracks_container_scrollable.setContent(this.soundtracksContainer);
         this.root.setCenter(soundtracks_container_scrollable);
