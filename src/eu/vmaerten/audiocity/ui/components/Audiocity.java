@@ -3,6 +3,7 @@ package eu.vmaerten.audiocity.ui.components;
 import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import eu.vmaerten.audiocity.soundtrack.formats.WavSoundtrack;
 import eu.vmaerten.audiocity.ui.AudiocityApp;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -18,6 +19,7 @@ public class Audiocity extends BorderPane {
     private List<SoundtrackPane> soundtracks;
     private VBox soundtracksContainer;
     private Stage stage;
+    private FileChooser fileChooser = new FileChooser();
 
     public Audiocity(Stage stage) {
         super();
@@ -28,8 +30,9 @@ public class Audiocity extends BorderPane {
 
         this.setupMenu();
         this.setupSoundtracksPanel();
+        this.setupFileChooser();
 
-        this.importWavSoundtrack("/home/xayah/Music/audio.wav");
+        this.doImportSoundtrack(new File("/home/xayah/Music/audio.wav"));
     }
 
     private void setupMenu() {
@@ -61,34 +64,43 @@ public class Audiocity extends BorderPane {
         this.setCenter(soundtracks_container_scrollable);
     }
 
-    private void importSoundtrack() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Import a soundtrack");
-        fileChooser.getExtensionFilters().addAll(
+    private void setupFileChooser() {
+        this.fileChooser = new FileChooser();
+        this.fileChooser.setTitle("Import a soundtrack");
+        this.fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.ogg", "*.mp3"),
                 new FileChooser.ExtensionFilter("All files", "*")
         );
+    }
 
-        File selectedFile = fileChooser.showOpenDialog(this.stage);
+    private void importSoundtrack() {
+        File selectedFile = this.fileChooser.showOpenDialog(this.stage);
         if(selectedFile != null) {
-            String extension = Audiocity.getExtension(selectedFile);
-            switch (extension) {
-                case ".wav":
-                    this.importWavSoundtrack(selectedFile.getPath());
-                    break;
-                default:
-                    Audiocity.showAlert(Alert.AlertType.ERROR, "Unsupported file extension");
-            }
+            this.doImportSoundtrack(selectedFile);
         }
     }
 
-    private void importWavSoundtrack(String path) {
-        try {
-            this.addSoundtrack(new WavSoundtrack(path));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Audiocity.showAlert(Alert.AlertType.ERROR, "An error occured when importing a WAV soundtrack. (more info in the console)");
-        }
+    private void doImportSoundtrack(File file) {
+        System.out.println("doImportSoundtrack");
+
+        Task<Soundtrack> soundtrackLoader = new SoundtrackLoader(file);
+
+        soundtrackLoader.setOnSucceeded(e -> {
+            Soundtrack soundtrack = soundtrackLoader.getValue();
+            if(soundtrack != null){
+                this.addSoundtrack(soundtrack);
+            } else {
+                Audiocity.showAlert(Alert.AlertType.ERROR, "Unsupported file extension");
+            }
+        });
+
+        soundtrackLoader.setOnFailed(e -> {
+            Audiocity.showAlert(Alert.AlertType.ERROR, soundtrackLoader.getException().getMessage());
+        });
+
+        Thread thread = new Thread(soundtrackLoader);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void addSoundtrack(Soundtrack soundtrack) {
@@ -111,5 +123,27 @@ public class Audiocity extends BorderPane {
     private static void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type, message);
         alert.showAndWait();
+    }
+
+    private class SoundtrackLoader extends Task<Soundtrack> {
+        private File file;
+        SoundtrackLoader(File file) {
+            this.file = file;
+        }
+
+        @Override
+        protected Soundtrack call() throws Exception {
+            System.out.println("SoundtrackLoader.call()");
+
+            Soundtrack soundtrack = null;
+            String extension = Audiocity.getExtension(this.file);
+            switch (extension) {
+                case ".wav":
+                    soundtrack = new WavSoundtrack(this.file.getPath());
+                    break;
+            }
+
+            return soundtrack;
+        }
     }
 }

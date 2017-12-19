@@ -8,12 +8,12 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelsPane extends AnchorPane {
+class ChannelsPane extends AnchorPane {
     private VBox inner_container;
     private List<ChannelPane> canvass;
     private Soundtrack soundtrack;
 
-    public ChannelsPane(Soundtrack soundtrack) {
+    ChannelsPane(Soundtrack soundtrack) {
         super();
 
         List<Channel> channels = soundtrack.getChannels();
