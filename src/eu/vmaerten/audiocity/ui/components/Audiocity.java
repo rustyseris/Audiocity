@@ -31,8 +31,6 @@ public class Audiocity extends BorderPane {
         this.setupMenu();
         this.setupSoundtracksPanel();
         this.setupFileChooser();
-
-        this.doImportSoundtrack(new File("/home/xayah/Music/audio.wav"));
     }
 
     private void setupMenu() {
