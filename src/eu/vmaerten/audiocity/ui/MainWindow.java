@@ -2,10 +2,10 @@ package eu.vmaerten.audiocity.ui;
 
 import eu.vmaerten.audiocity.soundtrack.Soundtrack;
 import eu.vmaerten.audiocity.soundtrack.formats.WavSoundtrack;
+import eu.vmaerten.audiocity.ui.Components.ChannelsPane;
 import eu.vmaerten.audiocity.ui.Components.SoundtrackPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
