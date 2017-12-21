@@ -3,7 +3,6 @@ package eu.audiocity.soundtrack.wav;
 import eu.audiocity.soundtrack.Channel;
 import eu.audiocity.soundtrack.Sample;
 import eu.audiocity.soundtrack.Soundtrack;
-import javafx.concurrent.Task;
 
 import javax.sound.sampled.AudioInputStream;
 import java.io.File;
@@ -27,8 +26,21 @@ public class WavSoundtrack extends Soundtrack {
     }
 
     @Override
+    public int getSamplesCount() {
+        if(this.channels.size() > 0) {
+            return this.channels.get(0).getSamples().size();
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public Duration getDuration() {
-        return null;
+        if(this.channels.size() > 0) {
+           return Duration.ofSeconds(this.channels.get(0).getSamples().size() / this.sampleRate);
+        } else {
+            return Duration.ZERO;
+        }
     }
 
     @Override
@@ -36,23 +48,12 @@ public class WavSoundtrack extends Soundtrack {
         return this.channels;
     }
 
-    @Override
-    public AudioInputStream getAudioStream() {
-        return null;
-    }
-
-    public static class Builder extends Task<Soundtrack> {
+    public static class Builder extends Soundtrack.Builder {
         private File file;
         private static final int CHUNK_SIZE = 4096;
 
         public Builder(File file) {
             this.file = file;
-        }
-
-        public void start() {
-            Thread executor = new Thread(this);
-            executor.setDaemon(true);
-            executor.start();
         }
 
         @Override
@@ -72,7 +73,7 @@ public class WavSoundtrack extends Soundtrack {
             for (int i = 0; i < channelCount; i++) {
                 channels.add(new ArrayList<>(totalFrameCount));
             }
-            
+
             double[][] buffer = new double[channelCount][CHUNK_SIZE];
             int frameRead = wav.readFrames(buffer, CHUNK_SIZE);
 
