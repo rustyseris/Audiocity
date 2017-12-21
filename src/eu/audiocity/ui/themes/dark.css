@@ -7,10 +7,33 @@
 #soundtracks-container {
     -fx-border-color: #484B51;
     -fx-padding: 5px;
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: true;
 }
 
 #soundtracks-container .v-box {
     -fx-spacing: 5px;
+}
+
+#audio-player {
+    -fx-background-color: #2F3136;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-spacing: 5px;
+}
+
+#audio-player Text {
+    -fx-fill: white;
+    -fx-text-alignment: center;
+}
+
+Button {
+    -fx-background-color: rgb(32, 34, 37);
+    -fx-text-fill: white;
+}
+
+#audio-player Button:armed {
+    -fx-background-color: #484B51;
 }
 
 .soundtrack-pane {
@@ -18,14 +41,35 @@
     -fx-border-color: black;
 }
 
-.soundtrack-info-pane  {
+.soundtrack-pane.selected-soundtrack .soundtrack-context-pane {
+    -fx-background-color: rgb(70, 35, 35);
+    -fx-spacing: 10px;
+}
+
+.soundtrack-context-pane  {
     -fx-background-color: #2F3136;
     -fx-padding: 5px;
 }
 
-.soundtrack-info-pane Text {
+.soundtrack-context-pane Text {
     -fx-fill: #e7e7e7;
+    -fx-font-size: 10px;
+}
+
+.soundtrack-context-pane HBox {
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.soundtrack-context-pane .close-soundtrack {
+    -fx-max-width: 5px;
+    -fx-max-height: 5px;
+    -fx-text-fill: red;
+}
+
+.soundtrack-context-pane .soundtrack-title {
     -fx-font-weight: bold;
+    -fx-font-size: 12px;
 }
 
 .channels-pane {

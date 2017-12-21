@@ -19,6 +19,7 @@ public abstract class Soundtrack {
     public abstract List<Channel> getChannels();
 
     public AudioInputStream getAudioStream() {
+        InputStream inputStream = new SoundtrackStream(this);
         AudioFormat format = new AudioFormat(
                 this.getSampleRate(),
                 BITS_PER_SAMPLE,
@@ -26,9 +27,10 @@ public abstract class Soundtrack {
                 false,
                 true
         );
-        InputStream inputStream = new SoundtrackStream(this);
         return new AudioInputStream(inputStream, format, this.getSamplesCount() * this.getChannels().size());
     }
+
+    public abstract Soundtrack copy();
 
     public static abstract class Builder extends Task<Soundtrack> {
         public void startTask() {

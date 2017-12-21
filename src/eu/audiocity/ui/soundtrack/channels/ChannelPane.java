@@ -1,4 +1,4 @@
-package eu.audiocity.ui.soundtrack;
+package eu.audiocity.ui.soundtrack.channels;
 
 import eu.audiocity.soundtrack.Channel;
 import javafx.scene.layout.AnchorPane;

@@ -1,4 +1,4 @@
-package eu.audiocity.ui.soundtrack;
+package eu.audiocity.ui.soundtrack.channels;
 
 import eu.audiocity.soundtrack.Channel;
 import eu.audiocity.soundtrack.Soundtrack;
@@ -8,12 +8,12 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-class ChannelsPane extends AnchorPane {
+public class ChannelsPane extends AnchorPane {
     private VBox inner_container;
     private List<ChannelPane> canvass;
     private Soundtrack soundtrack;
 
-    ChannelsPane(Soundtrack soundtrack) {
+    public ChannelsPane(Soundtrack soundtrack) {
         super();
 
         List<Channel> channels = soundtrack.getChannels();

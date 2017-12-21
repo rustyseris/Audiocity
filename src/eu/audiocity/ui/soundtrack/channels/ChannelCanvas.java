@@ -1,4 +1,4 @@
-package eu.audiocity.ui.soundtrack;
+package eu.audiocity.ui.soundtrack.channels;
 
 import eu.audiocity.soundtrack.Channel;
 import eu.audiocity.soundtrack.Sample;
@@ -28,9 +28,11 @@ class ChannelCanvas extends Canvas {
     @Override
     public void resize(double width, double height) {
         super.resize(width, CANVAS_HEIGHT);
-        this.setWidth(width);
-        this.setHeight(height);
-        draw();
+        if(width != this.getWidth() || height != this.getHeight()) {
+            this.setWidth(width);
+            this.setHeight(height);
+            draw();
+        }
     }
 
     @Override

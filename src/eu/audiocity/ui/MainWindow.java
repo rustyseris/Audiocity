@@ -1,5 +1,9 @@
 package eu.audiocity.ui;
 
+import eu.audiocity.audio.AudioManager;
+import eu.audiocity.soundtrack.Soundtrack;
+import eu.audiocity.soundtrack.wav.WavSoundtrack;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -8,20 +12,31 @@ import java.io.File;
 
 public class MainWindow extends BorderPane {
     private TopMenu topMenu;
-    private SoundtracksPane soundtracksPane = new SoundtracksPane();
+    private SoundtracksPane soundtracksPane;
+    private AudioPlayer audioPlayer;
     private FileChooser fileChooser = new FileChooser();
     private Stage stage;
+    private SimpleObjectProperty<Soundtrack> selectedSoundtrack;
+
+    private AudioManager audioManager = new AudioManager();
 
     public MainWindow(Stage stage) {
         super();
         this.stage = stage;
         this.topMenu = new TopMenu(this);
-        this.topMenu.setId("top-menu");
-        this.soundtracksPane.setId("soundtracks-container");
+        this.soundtracksPane = new SoundtracksPane(this);
+        this.audioPlayer = new AudioPlayer(this);
 
         this.setId("root");
+        this.topMenu.setId("top-menu");
+        this.soundtracksPane.setId("soundtracks-container");
+        this.audioPlayer.setId("audio-player");
+
         this.setTop(this.topMenu);
         this.setCenter(this.soundtracksPane);
+        this.setBottom(this.audioPlayer);
+
+        this.selectedSoundtrack = new SimpleObjectProperty<>(null);
 
         this.getStylesheets().add(this.getClass().getResource("themes/dark.css").toExternalForm());
 
@@ -42,5 +57,13 @@ public class MainWindow extends BorderPane {
         );
         this.fileChooser.setTitle("Import Soundtrack");
         this.fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    }
+
+    public AudioManager getAudioManager() {
+        return this.audioManager;
+    }
+
+    public SimpleObjectProperty<Soundtrack> selectedSoundtrack() {
+        return this.selectedSoundtrack;
     }
 }
