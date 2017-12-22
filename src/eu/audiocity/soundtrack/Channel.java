@@ -29,6 +29,10 @@ public class Channel implements Iterable<Sample> {
         return this.samples;
     }
 
+    public void setSamples(List<Sample> samples) {
+        this.samples = samples;
+    }
+
     @Override
     public Iterator<Sample> iterator() {
         return this.samples.iterator();

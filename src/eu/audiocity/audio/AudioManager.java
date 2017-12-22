@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import java.time.Duration;
+import java.util.ArrayList;
 
 public class AudioManager {
     private enum Status {
@@ -18,12 +19,12 @@ public class AudioManager {
     private Status currentStatus = Status.STOP;
 
     public void play(Soundtrack soundtrack) throws Exception {
-        if(soundtrack != null) {
-            if(this.getSoundtrack() != soundtrack) {
-                this.stop();
-                this.setSoundtrack(soundtrack);
-            }
+        if(this.getSoundtrack() != soundtrack) {
+            this.stop();
+            this.setSoundtrack(soundtrack);
+        }
 
+        if(soundtrack != null) {
             if(this.currentStatus != Status.PLAY) {
                 this.currentClip.start();
                 this.currentStatus = Status.PLAY;
@@ -41,9 +42,9 @@ public class AudioManager {
     public void stop() {
         if(this.currentClip != null) {
             this.currentClip.close();
-            this.currentClip = null;
-            this.currentSoundtrack = null;
         }
+        this.currentClip = null;
+        this.currentSoundtrack = null;
         this.currentStatus = Status.STOP;
     }
 

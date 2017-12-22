@@ -1,12 +1,13 @@
 package eu.audiocity.soundtrack;
 
+import eu.audiocity.soundtrack.transform.Transform;
 import javafx.concurrent.Task;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Soundtrack {
@@ -17,6 +18,7 @@ public abstract class Soundtrack {
     public abstract int getSamplesCount();
     public abstract Duration getDuration();
     public abstract List<Channel> getChannels();
+    public abstract Soundtrack copy();
 
     public AudioInputStream getAudioStream() {
         InputStream inputStream = new SoundtrackStream(this);
@@ -30,7 +32,9 @@ public abstract class Soundtrack {
         return new AudioInputStream(inputStream, format, this.getSamplesCount() * this.getChannels().size());
     }
 
-    public abstract Soundtrack copy();
+    public void applyTransform(Transform transform) {
+        transform.apply(this.getChannels());
+    }
 
     public static abstract class Builder extends Task<Soundtrack> {
         public void startTask() {

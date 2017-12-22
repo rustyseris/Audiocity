@@ -5,6 +5,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 public class AudioCity extends Application {
     private static final int WINDOW_WIDTH = 1280;
     private static final int WINDOW_HEIGHT = 720;
@@ -20,6 +22,8 @@ public class AudioCity extends Application {
     public void start(Stage stage) {
         MainWindow root = new MainWindow(stage);
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        root.getSoundtracksPane().importSoundtrack(new File("/home/xayah/Music/audio.wav"));
 
         stage.setScene(scene);
         stage.setMinWidth(WINDOW_MIN_WIDTH);

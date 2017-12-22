@@ -702,7 +702,6 @@ class WavFile
 	{
 		if (args.length < 1)
 		{
-			System.err.println("Must supply filename");
 			System.exit(1);
 		}
 
@@ -748,7 +747,6 @@ class WavFile
 		}
 		catch (Exception e)
 		{
-			System.err.println(e);
 			e.printStackTrace();
 		}
 	}

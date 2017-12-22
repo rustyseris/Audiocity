@@ -43,12 +43,12 @@ Button {
 
 .soundtrack-pane.selected-soundtrack .soundtrack-context-pane {
     -fx-background-color: rgb(70, 35, 35);
-    -fx-spacing: 10px;
 }
 
 .soundtrack-context-pane  {
     -fx-background-color: #2F3136;
     -fx-padding: 5px;
+    -fx-spacing: 10px;
 }
 
 .soundtrack-context-pane Text {
@@ -64,7 +64,8 @@ Button {
 .soundtrack-context-pane .close-soundtrack {
     -fx-max-width: 5px;
     -fx-max-height: 5px;
-    -fx-text-fill: red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
 .soundtrack-context-pane .soundtrack-title {
@@ -75,6 +76,20 @@ Button {
 .channels-pane {
     -fx-background-color: #36393E;
     -fx-padding: 10px;
+}
+
+.channels-pane NumberAxis {
+    -fx-tick-label-fill: #afafaf;
+}
+
+.axis-tick-mark {
+    -fx-stroke: #afafaf;
+    -fx-tick-label-fill: #afafaf;
+}
+
+.axis-minor-tick-mark {
+    -fx-stroke: #7c7c7c;
+    -fx-tick-label-fill: #7c7c7c;
 }
 
 .channels-container {

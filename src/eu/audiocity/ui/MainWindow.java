@@ -23,6 +23,9 @@ public class MainWindow extends BorderPane {
     public MainWindow(Stage stage) {
         super();
         this.stage = stage;
+
+        this.selectedSoundtrack = new SimpleObjectProperty<>(null);
+
         this.topMenu = new TopMenu(this);
         this.soundtracksPane = new SoundtracksPane(this);
         this.audioPlayer = new AudioPlayer(this);
@@ -35,8 +38,6 @@ public class MainWindow extends BorderPane {
         this.setTop(this.topMenu);
         this.setCenter(this.soundtracksPane);
         this.setBottom(this.audioPlayer);
-
-        this.selectedSoundtrack = new SimpleObjectProperty<>(null);
 
         this.getStylesheets().add(this.getClass().getResource("themes/dark.css").toExternalForm());
 
@@ -57,6 +58,10 @@ public class MainWindow extends BorderPane {
         );
         this.fileChooser.setTitle("Import Soundtrack");
         this.fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    }
+
+    public SoundtracksPane getSoundtracksPane() {
+        return soundtracksPane;
     }
 
     public AudioManager getAudioManager() {

@@ -50,7 +50,7 @@ class ChannelCanvas extends Canvas {
         return true;
     }
 
-    private void draw() {
+    public void draw() {
         this.soundwaveDrawer.restart();
     }
 

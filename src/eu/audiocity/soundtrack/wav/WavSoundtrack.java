@@ -3,9 +3,8 @@ package eu.audiocity.soundtrack.wav;
 import eu.audiocity.soundtrack.Channel;
 import eu.audiocity.soundtrack.Sample;
 import eu.audiocity.soundtrack.Soundtrack;
-import javafx.concurrent.Task;
+import eu.audiocity.soundtrack.transform.Transform;
 
-import javax.sound.sampled.AudioInputStream;
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -15,6 +14,10 @@ public class WavSoundtrack extends Soundtrack {
     private File file;
     private List<Channel> channels;
     private int sampleRate;
+
+    public WavSoundtrack() {
+        super();
+    }
 
     @Override
     public String getName() {
@@ -28,8 +31,8 @@ public class WavSoundtrack extends Soundtrack {
 
     @Override
     public int getSamplesCount() {
-        if(this.channels.size() > 0) {
-            return this.channels.get(0).getSamples().size();
+        if(this.getChannels().size() > 0) {
+            return this.getChannels().get(0).getSamples().size();
         } else {
             return 0;
         }

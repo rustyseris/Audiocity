@@ -1,11 +1,14 @@
 package eu.audiocity.ui.soundtrack.channels;
 
 import eu.audiocity.soundtrack.Channel;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.AnchorPane;
 
 class ChannelPane extends AnchorPane {
+    private ChannelCanvas canvas;
+
     ChannelPane(Channel channel) {
-        ChannelCanvas canvas = new ChannelCanvas(channel);
+        this.canvas = new ChannelCanvas(channel);
 
         AnchorPane.setLeftAnchor(canvas, 0.0);
         AnchorPane.setRightAnchor(canvas, 0.0);
@@ -17,5 +20,9 @@ class ChannelPane extends AnchorPane {
 
         this.setPrefHeight(ChannelCanvas.CANVAS_HEIGHT);
         this.setPrefWidth(USE_COMPUTED_SIZE);
+    }
+
+    public void redrawChannel() {
+        this.canvas.draw();
     }
 }
