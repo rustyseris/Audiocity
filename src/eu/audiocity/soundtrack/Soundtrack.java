@@ -15,6 +15,7 @@ public abstract class Soundtrack {
 
     public abstract String getName();
     public abstract int getSampleRate();
+    public abstract void setSampleRate(int sampleRate);
     public abstract int getSamplesCount();
     public abstract Duration getDuration();
     public abstract List<Channel> getChannels();

@@ -23,6 +23,8 @@ public class SoundtrackPane extends HBox {
 
     private MenuItem duplicate = new MenuItem("Duplicate");
     private MenuItem scale = new MenuItem("Scale");
+    private MenuItem sampleRate = new MenuItem("Change sample rate");
+    private MenuItem reverse = new MenuItem("Reverse");
     private MenuItem shift = new MenuItem("Shift");
     private MenuItem smooth = new MenuItem("Smooth");
     private MenuItem merge = new MenuItem("Merge with selected soundtrack");
@@ -62,7 +64,7 @@ public class SoundtrackPane extends HBox {
     }
 
     private void setupContextMenu() {
-        this.contextMenu.getItems().addAll(this.duplicate, this.slice, this.scale, this.shift, this.smooth, this.merge);
+        this.contextMenu.getItems().addAll(this.duplicate, this.slice, this.reverse, this.scale, this.shift, this.smooth, this.merge, this.sampleRate);
         this.setOnContextMenuRequested(e -> {
             this.contextMenu.show(this, e.getScreenX(), e.getScreenY());
         });
@@ -74,14 +76,14 @@ public class SoundtrackPane extends HBox {
         this.scale.setOnAction(e -> {
             Utils.askForDouble("Scaling factor").ifPresent(scalingFactor -> {
                 this.soundtrack.applyTransform(new Scale(scalingFactor));
-                this.redrawChannels();
+                this.updateSoundtrack();
             });
         });
 
         this.shift.setOnAction(e -> {
             Utils.askForDouble("Time shift (in seconds)").ifPresent(timeShift -> {
                 this.soundtrack.applyTransform(new Shift(timeShift));
-                this.redrawChannels();
+                this.updateSoundtrack();
             });
         });
 
@@ -89,7 +91,7 @@ public class SoundtrackPane extends HBox {
             Utils.askForDouble("Averaging window size (in number of samples)").ifPresent(windowSize -> {
                 if(windowSize > 0) {
                     this.soundtrack.applyTransform(new Smooth((int) Math.floor(windowSize)));
-                    this.redrawChannels();
+                    this.updateSoundtrack();
                 } else {
                     Utils.alert(Alert.AlertType.ERROR, "The averaging window size must be superior to 0");
                 }
@@ -100,7 +102,7 @@ public class SoundtrackPane extends HBox {
             Soundtrack selectedSoundtrack = this.mainWindow.selectedSoundtrack().getValue();
             if(selectedSoundtrack != null) {
                 this.soundtrack.applyTransform(new Merge(selectedSoundtrack));
-                this.redrawChannels();
+                this.updateSoundtrack();
             }
         });
 
@@ -108,14 +110,29 @@ public class SoundtrackPane extends HBox {
             Utils.askForDouble("From time (in seconds)").ifPresent(fromTime -> {
                 Utils.askForDouble("to time (in seconds)").ifPresent(toTime -> {
                     this.soundtrack.applyTransform(new Slice(fromTime, toTime));
-                    this.redrawChannels();
+                    this.updateSoundtrack();
                 });
+            });
+        });
+
+        this.reverse.setOnAction(e -> {
+            this.soundtrack.applyTransform(new Reverse());
+            this.updateSoundtrack();
+        });
+
+        this.sampleRate.setOnAction(e -> {
+            Utils.askForDouble(String.format("%d", this.soundtrack.getSampleRate())).ifPresent(sampleRate -> {
+                if(sampleRate > 0) {
+                    this.soundtrack.setSampleRate((int) Math.ceil(sampleRate));
+                    this.updateSoundtrack();
+                }
             });
         });
     }
 
-    public void redrawChannels() {
+    public void updateSoundtrack() {
         this.channelsPane.redrawChannels();
+        this.soundtrackInfo.updateInfo();
     }
 
     public Soundtrack getSoundtrack() {

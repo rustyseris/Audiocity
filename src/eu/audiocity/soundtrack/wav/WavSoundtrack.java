@@ -30,6 +30,11 @@ public class WavSoundtrack extends Soundtrack {
     }
 
     @Override
+    public void setSampleRate(int sampleRate) {
+        this.sampleRate = sampleRate;
+    }
+
+    @Override
     public int getSamplesCount() {
         if(this.getChannels().size() > 0) {
             return this.getChannels().get(0).getSamples().size();

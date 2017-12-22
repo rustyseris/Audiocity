@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mp3Soundtrack extends Soundtrack {
+public abstract class Mp3Soundtrack extends Soundtrack {
     File file;
 
     public Mp3Soundtrack(File file) throws Exception {
